@@ -1,0 +1,24 @@
+http://localhost:9000/oauth2/authorize?response_type=code&client_id=taco-admin-client&redirect_uri=http://127.0.0.1:9090/login/oauth2/code/taco-admin-client&scope=writeIngredients+deleteIngredients
+
+curl localhost:9000/oauth2/token \
+-H "Content-type: application/x-www-form-urlencoded" \
+-d "grant_type=authorization_code" \
+-d "redirect_uri=http://127.0.0.1:9000/login/oauth2/code/taco-admin-client" \
+-d "code=" \
+-u taco-admin-client:secret
+
+curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d "grant_type=authorization_code&code=QUraZlbJZ1S-_GOSr9tk1RokiaeUtyqDT-CrWcjpK48lnq1c79scc5l1x9Q5XtLlDB5e3TT8qSkSXegv2Q3HsaLHZ5RUhXNyJwmKIto5NjGTHt4_5rT9wRGwW1kA7uRm&redirect_uri=http://127.0.0.1:9090/login/oauth2/code/taco-admin-client&client_id=taco-admin-client&client_secret=secret" http://localhost:9000/oauth2/token
+
+https://backstage.forgerock.com/knowledge/kb/article/a45882528
+
+curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d "grant_type=authorization_code&code=QUraZlbJZ1S-_GOSr9tk1RokiaeUtyqDT-CrWcjpK48lnq1c79scc5l1x9Q5XtLlDB5e3TT8qSkSXegv2Q3HsaLHZ5RUhXNyJwmKIto5NjGTHt4_5rT9wRGwW1kA7uRm&redirect_uri=http://127.0.0.1:9099/oauth&client_id=taco-admin-client&client_secret=secret" http://localhost:9000/oauth2/access_token
+
+#Spring Security
+curl -XPOST -u taco-admin-client:secret http://localhost:9000/oauth/token?grant_type=password&username=tacochef&password=password&scope=read -v
+
+
+
+
+
+
+
