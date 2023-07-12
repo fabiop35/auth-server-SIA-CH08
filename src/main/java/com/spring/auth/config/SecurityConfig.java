@@ -17,33 +17,22 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http)
             throws Exception {
-
-    return http
-      .authorizeRequests(
-        authorizeRequests
-        -> authorizeRequests
-         .mvcMatchers("/h2-console/**")
-          .access("permitAll")
-         .anyRequest().authenticated() )
-     .csrf()
-      .ignoringAntMatchers("/h2-console/**")
-        .and().headers().frameOptions()
-         .sameOrigin()
-                .and()
+        return http
+                .authorizeRequests(authorizeRequests
+                        -> authorizeRequests.anyRequest().authenticated()
+                )
                 .formLogin()
-            
-            .and().httpBasic()
                 .and().build();
     }
 
- @Bean
- public UserDetailsService userDetailsService(UserRepository userRepo) {
+    @Bean
+    public UserDetailsService userDetailsService(UserRepository userRepo) {
         return username -> userRepo.findByUsername(username);
     }
 
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-      PasswordEncoder p = NoOpPasswordEncoder.getInstance();
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        var p = NoOpPasswordEncoder.getInstance();
         return p;
-  }
+    }
 }

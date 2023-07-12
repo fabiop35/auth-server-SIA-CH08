@@ -9,6 +9,8 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.UUID;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.Ordered;
@@ -36,46 +38,49 @@ public class AuthorizationServerConfig {
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authorizationServerSecurityFilterChain(
-                                    HttpSecurity http) throws Exception {
+            HttpSecurity http) throws Exception {
 
-  OAuth2AuthorizationServerConfiguration
+        OAuth2AuthorizationServerConfiguration
                 .applyDefaultSecurity(http);
-  return http
-    .formLogin(Customizer.withDefaults())
-     .build();
-  }
+        return http
+                .formLogin(Customizer.withDefaults())
+                .build();
+    }
 
-
-  @Bean
-  public RegisteredClientRepository registeredClientRepository(
-                                            PasswordEncoder passwordEncoder) {
-       //UUID.randomUUID().toString()
-      RegisteredClient registeredClient
-           = RegisteredClient.withId("taco-admin-client")
-        .clientId("taco-admin-client")
-        .clientName("taco-admin-client")
-        .id("taco-admin-client")
-       .clientSecret(passwordEncoder.encode("secret"))
-       .clientAuthenticationMethod(
-    ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+    @Bean
+    public RegisteredClientRepository registeredClientRepository(
+            PasswordEncoder passwordEncoder) {
+        //UUID.randomUUID().toString()
+        RegisteredClient registeredClient
+                //= RegisteredClient.withId("taco-admin-client")
+                = RegisteredClient.withId(UUID.randomUUID().toString())
+                        .clientId("client")
+                        //.clientName("taco-admin-client")
+                        //.id("taco-admin-client")
+                        .clientSecret(passwordEncoder.encode("secret"))
+                        .clientAuthenticationMethod(ClientAuthenticationMethod.BASIC)
                         .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                         .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                        .redirectUri(
-    "http://127.0.0.1:9090/login/oauth2/code/taco-admin-client")
+                        .redirectUri("http://127.0.0.1:9090/login/oauth2/code/client")
                         .scope("writeIngredients")
                         .scope("deleteIngredients")
                         .scope(OidcScopes.OPENID)
                         .clientSettings(
                                 clientSettings -> clientSettings.requireUserConsent(true))
                         .build();
-      
-          System.out.println("》clientID: "+registeredClient.getClientId());
-          System.out.println("》clientName: "+registeredClient.getClientName());
-          System.out.println("》Secret: "+registeredClient.getClientSecret());
-          System.out.println("》ID: "+registeredClient.getId());
-          System.out.println("》redirect: "+registeredClient.getRedirectUris());
-          System.out.println("》expires: "+registeredClient.getClientSecretExpiresAt());
-          
+
+        System.out.println("》clientID: " + registeredClient.getClientId());
+        System.out.println("》clientName: " + registeredClient.getClientName());
+        System.out.println("》Secret: " + registeredClient.getClientSecret());
+        System.out.println("》ID: " + registeredClient.getId());
+        System.out.println("》redirect: " + registeredClient.getRedirectUris());
+        System.out.println("》expires: " + registeredClient.getClientSecretExpiresAt());
+        System.out.println("[ Grant Type: " + registeredClient.getAuthorizationGrantTypes().toString());
+        Set<AuthorizationGrantType> at = registeredClient.getAuthorizationGrantTypes();
+        for (AuthorizationGrantType att : at) {
+            System.out.println("Value " + att.getValue());
+        }
+
         return new InMemoryRegisteredClientRepository(registeredClient);
     }
 
@@ -107,10 +112,11 @@ public class AuthorizationServerConfig {
     public JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource) {
         return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
     }
-    
+
     @Bean
-  public ProviderSettings providerSettings() {
-       return new ProviderSettings().issuer("http://localhost:9000");
-  }
+    public ProviderSettings providerSettings() {
+        return new ProviderSettings().issuer("http://auth-server:9000");
+        //return ProviderSettings.builder().issuer("http://127.0.0.1:9000").build();
+    }
 
 }

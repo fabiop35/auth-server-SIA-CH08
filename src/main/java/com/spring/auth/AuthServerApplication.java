@@ -2,6 +2,7 @@ package com.spring.auth;
 
 import com.spring.auth.users.User;
 import com.spring.auth.users.UserRepository;
+//import java.util.TimeZone;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -23,6 +24,10 @@ public class AuthServerApplication {
     }
 
     public static void main(String[] args) {
+        //System.out.println("》》》Setting the timezone"+TimeZone.getTimeZone("GMT-5:00").getID());
+        //TimeZone.setDefault(TimeZone.getTimeZone("GMT-5:00"));
+        
+    
         SpringApplication.run(AuthServerApplication.class, args);
     }
 
